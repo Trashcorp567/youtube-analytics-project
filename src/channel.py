@@ -6,7 +6,6 @@ from googleapiclient.discovery import build
 class Channel:
     """Класс для ютуб - канала"""
 
-
     def __init__(self, channel_id: str) -> None:
         """
         Экземпляр инициализируется id канала.
@@ -20,6 +19,27 @@ class Channel:
         self.video_count = 0
         self.view_count = 0
         self.fetch_channel_data()
+
+    def __str__(self):
+        return f'{self.title} ({self.url})'
+
+    def __add__(self, other):
+        return self.subscriber_count + other.subscriber_count
+
+    def __sub__(self, other):
+        return self.subscriber_count - other.subscriber_count
+
+    def __le__(self, other):
+        return self.subscriber_count <= other.subscriber_count
+
+    def __gt__(self, other):
+        return self.subscriber_count > other.subscriber_count
+
+    def __lt__(self, other):
+        return self.subscriber_count < other.subscriber_count
+
+    def __ge__(self, other):
+        return self.subscriber_count >= other.subscriber_count
 
     def to_json(self, filename: str):
         data = {
