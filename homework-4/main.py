@@ -1,5 +1,4 @@
 from src.video import Video, PLVideo
-
 if __name__ == '__main__':
     # Создаем два экземпляра класса
     video1 = Video('AWX4JnAnjBE')  # 'AWX4JnAnjBE' - это id видео из ютуб
