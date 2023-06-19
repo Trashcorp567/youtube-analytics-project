@@ -84,7 +84,7 @@ for video in video_response['items']:
 '''
 получить статистику видео по его id
 получить id можно из адреса видео
-https://www.youtube.com/watch?v=gaoc9MPZ4bw или video_linkgaoc9MPZ4bw
+https://www.youtube.com/watch?v=gaoc9MPZ4bw или https://youtu.be/gaoc9MPZ4bw
 '''
 video_id = 'gaoc9MPZ4bw'
 video_response = youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
