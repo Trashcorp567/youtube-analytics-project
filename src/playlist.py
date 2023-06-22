@@ -1,7 +1,6 @@
 from src.channel import Channel
 from datetime import timedelta
 import isodate
-import datetime
 
 
 class PlayList(Channel):
@@ -18,6 +17,9 @@ class PlayList(Channel):
 
     @property
     def total_duration(self):
+        """
+        Возвращает общую длиительность всех видео в плейлисте
+        """
         playlist_videos = self.youtube.playlistItems().list(
             playlistId=self.playlist_id,
             part='contentDetails',
@@ -42,12 +44,18 @@ class PlayList(Channel):
         return total_duration
 
     def fetch_playlist_data(self):
+        """
+        Вытаскивает информацию по плейслисту
+        """
         for playlist in self.playlists['items']:
             if playlist['id'] == self.playlist_id:
                 self.title = playlist['snippet']['title']
                 self.url = f"https://www.youtube.com/playlist?list={self.playlist_id}"
 
     def show_best_video(self):
+        """
+        Возвращает самое популярное видео на основе кол-ва лайков
+        """
         playlist_items = self.youtube.playlistItems().list(
             playlistId=self.playlist_id,
             part='snippet',
