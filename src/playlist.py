@@ -1,24 +1,27 @@
-from src.channel import Channel
+from googleapiclient.discovery import build
 from datetime import timedelta
 import isodate
+import os
 
 
-class PlayList(Channel):
+class PlayList:
     def __init__(self, playlist_id):
-        super().__init__(channel_id='UC-OVMPlMA3-YCIeg4z5z23A')
         self.youtube = self.get_service()
         self.playlist_id = playlist_id
-        self.playlists = self.youtube.playlists().list(
-            channelId='UC-OVMPlMA3-YCIeg4z5z23A',
-            part='contentDetails,snippet',
-            maxResults=50,
-        ).execute()
+        self.title = ""
+        self.url = ""
         self.fetch_playlist_data()
+
+    @staticmethod
+    def get_service():
+        api_key = os.getenv('API_KEY')
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        return youtube
 
     @property
     def total_duration(self):
         """
-        Возвращает общую длиительность всех видео в плейлисте
+        Возвращает общую длительность всех видео в плейлисте
         """
         playlist_videos = self.youtube.playlistItems().list(
             playlistId=self.playlist_id,
@@ -45,16 +48,19 @@ class PlayList(Channel):
 
     def fetch_playlist_data(self):
         """
-        Вытаскивает информацию по плейслисту
+        Вытаскивает информацию по плейлисту
         """
-        for playlist in self.playlists['items']:
-            if playlist['id'] == self.playlist_id:
-                self.title = playlist['snippet']['title']
-                self.url = f"https://www.youtube.com/playlist?list={self.playlist_id}"
+        playlist = self.youtube.playlists().list(
+            id=self.playlist_id,
+            part='snippet'
+        ).execute()
+
+        self.title = playlist['items'][0]['snippet']['title']
+        self.url = f"https://www.youtube.com/playlist?list={self.playlist_id}"
 
     def show_best_video(self):
         """
-        Возвращает самое популярное видео на основе кол-ва лайков
+        Возвращает самое популярное видео на основе количества лайков
         """
         playlist_items = self.youtube.playlistItems().list(
             playlistId=self.playlist_id,
@@ -72,6 +78,9 @@ class PlayList(Channel):
                 part='statistics'
             ).execute()
             video_likes = int(video['items'][0]['statistics']['likeCount'])
-            best_video = video_id
+
+            if video_likes > max_likes:
+                best_video = video_id
+                max_likes = video_likes
 
         return f"https://youtu.be/{best_video}"
