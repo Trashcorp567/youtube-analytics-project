@@ -43,7 +43,6 @@ class PlayList:
             durations.append(duration)
 
         total_duration = sum(durations, timedelta())
-
         return total_duration
 
     def fetch_playlist_data(self):
